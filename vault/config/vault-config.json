@@ -1,0 +1,22 @@
+{
+    "storage": {
+        "mysql": {
+            "username": "<mysql-user-name>",
+            "password": "<mysql-password>",
+            "database": "<mysql-database>",
+            "address": "mysql:3306",
+            "table": "<table-for-vault>",
+            "ha_enabled": "true",
+            "lock_table": "<table-for-ha-info>"
+        }
+    },
+    "listener": {
+        "tcp": {
+            "address": "0.0.0.0:8200",
+            "tls_disable": 1
+        }
+    },
+    "ui": true,
+    "api_addr": "http://0.0.0.0:8200",
+    "disable_mlock": true
+}
