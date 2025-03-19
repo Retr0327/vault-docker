@@ -1,0 +1,39 @@
+services:
+  vault:
+    image: hashicorp/vault:1.13.3
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - 8200:8200
+    volumes:
+      - ./vault/config:/vault/config
+      - ./vault/policies:/vault/policies
+      - ./vault/data:/vault/data
+      - ./vault/logs:/vault/logs
+    environment:
+      - VAULT_ADDR=http://localhost:8200
+    command: server
+    cap_add:
+      - IPC_LOCK
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?err}
+      - MYSQL_USER=${MYSQL_USER:?err}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:?err}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?err}
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    restart: "always"
+    healthcheck:
+      test: "mysql -u $${MYSQL_USER} -p$${MYSQL_PASSWORD} -h localhost -e 'SELECT 1'"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
